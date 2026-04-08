@@ -1,47 +1,86 @@
-export const drawElement = (ctx, el) => {
+export const drawElement = (ctx, el, bgColor) => {
   ctx.save();
 
-  // 🖍 HIGHLIGHTER (NEW - FIXED)
+  const isDark =
+    bgColor === "#0f172a" || bgColor === "#000000" || bgColor === "black";
+
+  // 🖍 HIGHLIGHTER — neon glow on dark, flat marker on light
   if (el.type === "highlighter") {
-    ctx.globalCompositeOperation = "multiply"; // 🔥 overlap effect
-    ctx.globalAlpha = 0.35;
+    ctx.save();
 
-    ctx.strokeStyle = el.color;
-    ctx.lineWidth = el.size * 3;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    if (isDark) {
+      // 🌟 NEON GLOW MODE
+      ctx.globalCompositeOperation = "screen";
+      ctx.globalAlpha = 0.85;
+      ctx.strokeStyle = el.color;
+      ctx.lineWidth = el.size * 3;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.shadowColor = el.color;
+      ctx.shadowBlur = el.size * 6;
 
-    ctx.shadowColor = el.color;
-    ctx.shadowBlur = el.size * 2;
+      ctx.beginPath();
+      el.points.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.stroke();
 
-    ctx.beginPath();
-    el.points.forEach((p, i) => {
-      if (i === 0) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y);
-    });
-    ctx.stroke();
+      // Wide soft halo pass for extra depth
+      ctx.globalAlpha = 0.4;
+      ctx.lineWidth = el.size * 7;
+      ctx.stroke();
+    } else {
+      // 🖍 FLAT MARKER MODE
+      ctx.globalCompositeOperation = "multiply";
+      ctx.globalAlpha = 0.35;
+      ctx.strokeStyle = el.color;
+      ctx.lineWidth = el.size * 4;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.shadowBlur = 0;
 
-    ctx.globalCompositeOperation = "source-over";
+      ctx.beginPath();
+      el.points.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.stroke();
+    }
+
+    ctx.restore();
+    return;
   }
 
   // ✏️ PENCIL / BRUSH / ERASER
-  else if (
-    el.type === "pencil" ||
-    el.type === "brush" ||
-    el.type === "eraser"
-  ) {
+  if (el.type === "pencil" || el.type === "brush" || el.type === "eraser") {
     ctx.globalAlpha = el.opacity;
     ctx.strokeStyle = el.color;
     ctx.lineWidth = el.size;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
+    if (isDark && el.type !== "eraser") {
+      ctx.shadowColor = el.color;
+      ctx.shadowBlur = el.size * 2;
+      ctx.globalCompositeOperation = "lighter";
+    }
+
     ctx.beginPath();
     el.points.forEach((p, i) => {
       if (i === 0) ctx.moveTo(p.x, p.y);
       else ctx.lineTo(p.x, p.y);
     });
     ctx.stroke();
+
+    // Chalk core effect
+    if (isDark && el.type !== "eraser") {
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 0.9;
+      ctx.stroke();
+    }
+
+    ctx.globalCompositeOperation = "source-over";
   }
 
   // 📏 LINE
@@ -110,13 +149,11 @@ export const drawElement = (ctx, el) => {
     ctx.strokeStyle = el.color;
     ctx.lineWidth = el.size;
 
-    // line
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
 
-    // arrow head
     ctx.beginPath();
     ctx.moveTo(x2, y2);
     ctx.lineTo(

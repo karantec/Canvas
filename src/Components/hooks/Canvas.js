@@ -7,6 +7,7 @@ export const useCanvas = ({
   fillShape,
   brushSize,
   opacity,
+  bgColor, // ✅ NEW
 }) => {
   const canvasRef = useRef(null);
   const drawing = useRef(false);
@@ -25,6 +26,7 @@ export const useCanvas = ({
 
     let newEl;
 
+    // ✂️ CROP
     if (tool === "crop") {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
@@ -40,16 +42,28 @@ export const useCanvas = ({
       return;
     }
 
+    // ✏️ DRAWING TOOLS
     if (["pencil", "brush", "eraser", "highlighter"].includes(tool)) {
       newEl = {
         id: Date.now(),
         type: tool,
         points: [{ x, y }],
-        color: tool === "eraser" ? "#ffffff" : color,
+
+        // 🔥 FIX: dynamic eraser color
+        color:
+          tool === "eraser"
+            ? bgColor === "transparent"
+              ? "#ffffff"
+              : bgColor
+            : color,
+
         size: brushSize,
         opacity,
       };
-    } else {
+    }
+
+    // 📐 SHAPES
+    else {
       newEl = {
         id: Date.now(),
         type: tool,

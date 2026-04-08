@@ -12,8 +12,8 @@ export default function App() {
   const [fillShape, setFillShape] = useState(false);
   const [zoom, setZoom] = useState(1);
 
-  // ✅ NEW: Background color
-  const [bgColor, setBgColor] = useState("#ffffff");
+  // ✅ Default dark background like image 2
+  const [bgColor, setBgColor] = useState("#0f172a");
 
   const [slides, setSlides] = useState([[]]);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -21,7 +21,6 @@ export default function App() {
   const [history, setHistory] = useState([[]]);
   const [redoStack, setRedoStack] = useState([]);
 
-  // ✅ Handles function updater correctly
   const setElements = (updater) => {
     const current = slides[currentSlide] || [];
 
@@ -43,6 +42,7 @@ export default function App() {
       fillShape,
       brushSize,
       opacity,
+      bgColor,
       setElements,
     });
 
@@ -119,8 +119,8 @@ export default function App() {
           setFillShape={setFillShape}
           zoom={zoom}
           setZoom={setZoom}
-          bgColor={bgColor}          // ✅ NEW
-          setBgColor={setBgColor}    // ✅ NEW
+          bgColor={bgColor}
+          setBgColor={setBgColor}
         />
 
         <Canvas
@@ -130,7 +130,7 @@ export default function App() {
           endDraw={endDraw}
           elements={slides[currentSlide] || []}
           zoom={zoom}
-          bgColor={bgColor}         // ✅ NEW
+          bgColor={bgColor}
         />
 
         {/* 🎞 Slides */}

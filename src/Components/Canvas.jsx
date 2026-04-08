@@ -11,30 +11,29 @@ export default function Canvas({
   bgColor // ✅ NEW
 }) {
   useEffect(() => {
-    const canvas = canvasRef.current;
+  const canvas = canvasRef.current;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
 
-    const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d");
 
-    // 🔥 CLEAR
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 🎨 BACKGROUND
-    if (bgColor !== "transparent") {
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+  // 🎨 BACKGROUND
+  if (bgColor !== "transparent") {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
 
-    ctx.save();
-    ctx.scale(zoom, zoom);
+  ctx.save();
+  ctx.scale(zoom, zoom);
 
-    elements.forEach((el) => drawElement(ctx, el));
+  // ✅ PASS bgColor here
+  elements.forEach((el) => drawElement(ctx, el, bgColor));
 
-    ctx.restore();
-  }, [elements, zoom, bgColor]);
-
+  ctx.restore();
+}, [elements, zoom, bgColor]);
   return (
     <canvas
       ref={canvasRef}
