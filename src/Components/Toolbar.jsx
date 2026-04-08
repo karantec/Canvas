@@ -2,6 +2,7 @@ const TOOLS = [
   { id: "select", label: "🖱" },
   { id: "pencil", label: "✏️" },
   { id: "brush", label: "🖌" },
+  { id: "highlighter", label: "🖍" }, // ✅ NEW
   { id: "eraser", label: "🧽" },
   { id: "line", label: "📏" },
   { id: "rect", label: "⬛" },
@@ -17,7 +18,8 @@ export default function Toolbar({
   brushSize, setBrushSize,
   opacity, setOpacity,
   fillShape, setFillShape,
-  zoom, setZoom
+  zoom, setZoom,
+  bgColor, setBgColor // ✅ NEW
 }) {
   return (
     <div className="h-14 flex items-center gap-3 px-4 bg-white border-b flex-wrap">
@@ -48,7 +50,7 @@ export default function Toolbar({
         className="w-10 h-10 border rounded"
       />
 
-      {/* 🖌 BRUSH SIZE */}
+      {/* 🖌 SIZE */}
       <div className="flex items-center gap-1">
         <span className="text-xs">Size</span>
         <input
@@ -93,6 +95,26 @@ export default function Toolbar({
           step="0.1"
           value={zoom}
           onChange={(e) => setZoom(+e.target.value)}
+        />
+      </div>
+
+      {/* 🎨 BACKGROUND */}
+      <div className="flex gap-2 items-center">
+        <span className="text-xs">BG</span>
+
+        <button
+          onClick={() => setBgColor("#ffffff")}
+          className="w-6 h-6 bg-white border"
+        />
+
+        <button
+          onClick={() => setBgColor("#0f172a")}
+          className="w-6 h-6 bg-gray-900"
+        />
+
+        <button
+          onClick={() => setBgColor("transparent")}
+          className="w-6 h-6 border"
         />
       </div>
     </div>

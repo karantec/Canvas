@@ -7,32 +7,43 @@ export default function Canvas({
   startDraw,
   draw,
   endDraw,
-   zoom,
+  zoom,
+  bgColor // ✅ NEW
 }) {
   useEffect(() => {
-  const canvas = canvasRef.current;
+    const canvas = canvasRef.current;
 
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
 
-  const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // 🔥 CLEAR
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.save();
-  ctx.scale(zoom, zoom); // ✅ APPLY ZOOM
+    // 🎨 BACKGROUND
+    if (bgColor !== "transparent") {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
-  elements.forEach((el) => drawElement(ctx, el));
+    ctx.save();
+    ctx.scale(zoom, zoom);
 
-  ctx.restore();
-}, [elements, zoom]);
+    elements.forEach((el) => drawElement(ctx, el));
+
+    ctx.restore();
+  }, [elements, zoom, bgColor]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="w-full h-full bg-white"
-      onMouseDown={(e) => startDraw(e, elements)}
-      onMouseMove={(e) => draw(e, elements)}
+      style={{
+        background: bgColor === "transparent" ? "transparent" : bgColor
+      }}
+      className="w-full h-full"
+      onMouseDown={(e) => startDraw(e)}
+      onMouseMove={(e) => draw(e)}
       onMouseUp={endDraw}
     />
   );

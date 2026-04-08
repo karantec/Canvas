@@ -12,13 +12,16 @@ export default function App() {
   const [fillShape, setFillShape] = useState(false);
   const [zoom, setZoom] = useState(1);
 
+  // ✅ NEW: Background color
+  const [bgColor, setBgColor] = useState("#ffffff");
+
   const [slides, setSlides] = useState([[]]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const [history, setHistory] = useState([[]]);
   const [redoStack, setRedoStack] = useState([]);
 
-  // ✅ FIXED: handles function updater correctly
+  // ✅ Handles function updater correctly
   const setElements = (updater) => {
     const current = slides[currentSlide] || [];
 
@@ -34,14 +37,14 @@ export default function App() {
   };
 
   const { canvasRef, startDraw, draw, endDraw, clearCanvas } =
-  useCanvas({
-    tool,
-    color,
-    fillShape,
-    brushSize,
-    opacity,
-    setElements,
-  });
+    useCanvas({
+      tool,
+      color,
+      fillShape,
+      brushSize,
+      opacity,
+      setElements,
+    });
 
   const addSlide = () => {
     setSlides([...slides, []]);
@@ -116,6 +119,8 @@ export default function App() {
           setFillShape={setFillShape}
           zoom={zoom}
           setZoom={setZoom}
+          bgColor={bgColor}          // ✅ NEW
+          setBgColor={setBgColor}    // ✅ NEW
         />
 
         <Canvas
@@ -124,8 +129,11 @@ export default function App() {
           draw={draw}
           endDraw={endDraw}
           elements={slides[currentSlide] || []}
+          zoom={zoom}
+          bgColor={bgColor}         // ✅ NEW
         />
 
+        {/* 🎞 Slides */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-white p-2 rounded shadow">
           {slides.map((_, i) => (
             <button

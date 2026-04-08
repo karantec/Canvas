@@ -24,9 +24,8 @@ export const useCanvas = ({
     const { x, y } = getPos(e);
 
     let newEl;
-    if (tool === "crop") {
-      const { x, y } = getPos(e);
 
+    if (tool === "crop") {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
 
@@ -40,7 +39,8 @@ export const useCanvas = ({
 
       return;
     }
-    if (["pencil", "brush", "eraser"].includes(tool)) {
+
+    if (["pencil", "brush", "eraser", "highlighter"].includes(tool)) {
       newEl = {
         id: Date.now(),
         type: tool,
@@ -73,8 +73,6 @@ export const useCanvas = ({
     const { x, y } = getPos(e);
 
     setElements((prev) => {
-      if (!prev.length) return prev;
-
       const updated = [...prev];
       const el = updated[updated.length - 1];
 
